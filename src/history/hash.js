@@ -7,6 +7,10 @@ import { getLocation } from './html5'
 import { setupScroll, handleScroll } from '../util/scroll'
 import { pushState, replaceState, supportsPushState } from '../util/push-state'
 
+
+/**
+ * hash 模式下
+ */
 export class HashHistory extends History {
   constructor (router: Router, base: ?string, fallback: boolean) {
     super(router, base)
@@ -22,6 +26,7 @@ export class HashHistory extends History {
   setupListeners () {
     const router = this.router
     const expectScroll = router.options.scrollBehavior
+    // 支持 pushState 并且配置了scrollBehavior
     const supportsScroll = supportsPushState && expectScroll
 
     if (supportsScroll) {
