@@ -1,6 +1,7 @@
 import { warn } from '../util/warn'
 import { extend } from '../util/misc'
 
+// 定义 route-view 组件
 export default {
     name: 'RouterView',
     functional: true,
@@ -52,6 +53,7 @@ export default {
 
         // attach instance registration hook
         // this will be called in the instance's injected lifecycle hooks
+        // 这里的函数，会在install.js 里的混入mixin里面，回调到
         data.registerRouteInstance = (vm, val) => {
             // val could be undefined for unregistration
             const current = matched.instances[name]

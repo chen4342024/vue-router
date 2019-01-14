@@ -75,6 +75,7 @@ export function flatMapComponents(
     fn: Function
 ): Array < ? Function > {
     return flatten(matched.map(m => {
+
         return Object.keys(m.components).map(key => fn(
             m.components[key],
             m.instances[key],
@@ -83,6 +84,7 @@ export function flatMapComponents(
     }))
 }
 
+// 拉平一层数组  [1,2,[3,4]] ===> [1,2,3,4]
 export function flatten(arr: Array < any > ): Array < any > {
     return Array.prototype.concat.apply([], arr)
 }
@@ -91,6 +93,8 @@ const hasSymbol =
     typeof Symbol === 'function' &&
     typeof Symbol.toStringTag === 'symbol'
 
+
+// 是否是es模块
 function isESModule(obj) {
     return obj.__esModule || (hasSymbol && obj[Symbol.toStringTag] === 'Module')
 }

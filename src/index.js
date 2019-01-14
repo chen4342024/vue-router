@@ -15,7 +15,9 @@ import { AbstractHistory } from './history/abstract'
 
 import type { Matcher } from './create-matcher'
 
-
+/**
+ * 路由对象
+ */
 export default class VueRouter {
     static install: () => void;
     static version: string;
@@ -33,6 +35,7 @@ export default class VueRouter {
     resolveHooks: Array < ? NavigationGuard > ;
     afterHooks: Array < ? AfterNavigationHook > ;
 
+
     constructor(options: RouterOptions = {}) {
         this.app = null
         this.apps = []
@@ -45,11 +48,14 @@ export default class VueRouter {
         // 默认hash模式
         let mode = options.mode || 'hash'
 
-        // 降级处理
+        // 是否降级处理
         this.fallback = mode === 'history' && !supportsPushState && options.fallback !== false
+
+        // 进行降级处理
         if (this.fallback) {
             mode = 'hash'
         }
+
         if (!inBrowser) {
             mode = 'abstract'
         }
@@ -73,6 +79,7 @@ export default class VueRouter {
         }
     }
 
+    // 获取匹配的路由对象
     match(
         raw: RawLocation,
         current ? : Route,
@@ -81,10 +88,12 @@ export default class VueRouter {
         return this.matcher.match(raw, current, redirectedFrom)
     }
 
+    // 获取当前的路由
     get currentRoute(): ? Route {
         return this.history && this.history.current
     }
 
+    // 初始化
     init(app: any /* Vue component instance */ ) {
         process.env.NODE_ENV !== 'production' && assert(
             install.installed,
@@ -104,8 +113,10 @@ export default class VueRouter {
         const history = this.history
 
         if (history instanceof HTML5History) {
+            // history模式下
             history.transitionTo(history.getCurrentLocation())
         } else if (history instanceof HashHistory) {
+            // hash 模式下
             const setupHashListener = () => {
                 history.setupListeners()
             }
@@ -123,17 +134,21 @@ export default class VueRouter {
         })
     }
 
+    // 全局守护
     beforeEach(fn: Function): Function {
         return registerHook(this.beforeHooks, fn)
     }
 
+    // 全局守护
     beforeResolve(fn: Function): Function {
         return registerHook(this.resolveHooks, fn)
     }
 
+    // 全局守护
     afterEach(fn: Function): Function {
         return registerHook(this.afterHooks, fn)
     }
+
 
     onReady(cb: Function, errorCb ? : Function) {
         this.history.onReady(cb, errorCb)
@@ -163,12 +178,12 @@ export default class VueRouter {
         this.go(1)
     }
 
+    // 获取
     getMatchedComponents(to ? : RawLocation | Route): Array < any > {
         const route: any = to ?
             to.matched ?
             to :
-            this.resolve(to).route :
-            this.currentRoute
+            this.resolve(to).route : this.currentRoute
         if (!route) {
             return []
         }
@@ -228,6 +243,7 @@ function registerHook(list: Array < any > , fn: Function): Function {
     }
 }
 
+// 创建 href
 function createHref(base: string, fullPath: string, mode) {
     var path = mode === 'hash' ? '#' + fullPath : fullPath
     return base ? cleanPath(base + '/' + path) : path

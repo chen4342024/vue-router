@@ -26,6 +26,7 @@ export function install(Vue) {
     Vue.mixin({
         beforeCreate() {
             if (isDef(this.$options.router)) {
+                // 如果 router 已经定义了，则调用
                 this._routerRoot = this
                 this._router = this.$options.router
                 this._router.init(this)
@@ -33,6 +34,7 @@ export function install(Vue) {
             } else {
                 this._routerRoot = (this.$parent && this.$parent._routerRoot) || this
             }
+            // 注册实例
             registerInstance(this, this)
         },
         destroyed() {
@@ -40,14 +42,17 @@ export function install(Vue) {
         }
     })
 
+    // 挂载变量到原型上
     Object.defineProperty(Vue.prototype, '$router', {
         get() { return this._routerRoot._router }
     })
 
+    // 挂载变量到原型上
     Object.defineProperty(Vue.prototype, '$route', {
         get() { return this._routerRoot._route }
     })
 
+    // 注册全局组件
     Vue.component('RouterView', View)
     Vue.component('RouterLink', Link)
 

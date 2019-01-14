@@ -62,14 +62,19 @@ export class History {
         this.errorCbs.push(errorCb)
     }
 
+    // 切换路由
     transitionTo(location: RawLocation, onComplete ? : Function, onAbort ? : Function) {
+        // 匹配路由
         const route = this.router.match(location, this.current)
+
+
         this.confirmTransition(route, () => {
             this.updateRoute(route)
             onComplete && onComplete(route)
             this.ensureURL()
 
             // fire ready cbs once
+            // 触发 ready 方法
             if (!this.ready) {
                 this.ready = true
                 this.readyCbs.forEach(cb => { cb(route) })
@@ -85,7 +90,9 @@ export class History {
         })
     }
 
+    // 切换路由触发各种路由守护
     confirmTransition(route: Route, onComplete: Function, onAbort ? : Function) {
+
         const current = this.current
         const abort = err => {
             if (isError(err)) {
@@ -107,6 +114,7 @@ export class History {
             return abort()
         }
 
+        // 获取更新的，失活的，激活的
         const {
             updated,
             deactivated,
@@ -127,6 +135,7 @@ export class History {
         )
 
         this.pending = route
+
         const iterator = (hook: NavigationGuard, next) => {
             if (this.pending !== route) {
                 return abort()
@@ -162,13 +171,19 @@ export class History {
         }
 
         runQueue(queue, iterator, () => {
+
+            // queue 执行完后的回调
             const postEnterCbs = []
             const isValid = () => this.current === route
             // wait until async components are resolved before
             // extracting in-component enter guards
             const enterGuards = extractEnterGuards(activated, postEnterCbs, isValid)
             const queue = enterGuards.concat(this.router.resolveHooks)
+
+            // 执行 beforeEnter ,以及 resolve
             runQueue(queue, iterator, () => {
+
+                // 所有的 before 以及 resolve
                 if (this.pending !== route) {
                     return abort()
                 }

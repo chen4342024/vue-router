@@ -7,6 +7,7 @@ import { extend } from '../util/misc'
 const toTypes: Array < Function > = [String, Object]
 const eventTypes: Array < Function > = [String, Array]
 
+// 定义 route-link 组件
 export default {
     name: 'RouterLink',
     props: {
@@ -28,6 +29,8 @@ export default {
             default: 'click'
         }
     },
+
+    // 渲染函数
     render(h: Function) {
         const router = this.$router
         const current = this.$route
